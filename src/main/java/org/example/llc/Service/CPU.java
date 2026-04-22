@@ -5,7 +5,19 @@ public class CPU
     private Boolean running = false;
     private int programCounter = 0;
     private int instReg = 0;
-    private int address = 0;
+    private int addressReg = 0;
+
+    public int getAccumulator()
+    {
+        return accumulator;
+    }
+
+    public void setAccumulator(int accumulator)
+    {
+        this.accumulator = accumulator;
+    }
+
+    private int accumulator = 0;
 
     public Boolean getRunning()
     {
@@ -39,11 +51,11 @@ public class CPU
 
     public int getAddress()
     {
-        return address;
+        return addressReg;
     }
 
     public void setAddress(int address)
     {
-        this.address = address;
+        this.addressReg = address;
     }
 }

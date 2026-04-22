@@ -1,6 +1,5 @@
 package org.example.llc.UI;
 
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -16,6 +15,7 @@ public class CCMemoryCell extends VBox {
     private final TextField memoryField;
 
     public CCMemoryCell(int address) {
+        super();
         this.address = address;
         this.addressLbl = new Label(String.format("%02d", address));
         this.memoryField = initializeMemField();
@@ -67,8 +67,8 @@ public class CCMemoryCell extends VBox {
 
         memField.focusedProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal) { //Gained focus
-                if (memoryField.getText().equals("000")) {
-                    memoryField.clear();
+                if (memField.getText().equals("000")) {
+                    memField.clear();
                 }
             }
 

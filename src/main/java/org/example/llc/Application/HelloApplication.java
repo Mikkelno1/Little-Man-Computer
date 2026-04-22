@@ -23,7 +23,7 @@ public class HelloApplication extends Application
         UI ui = new UI();
         root = ui.getView();
         Scene scene = new Scene(root, width, height);
-        stage.setTitle("Hello!");
+        stage.setTitle("LLC!");
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
