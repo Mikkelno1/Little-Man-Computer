@@ -66,13 +66,13 @@ public class CCMemoryCell extends VBox {
         memField.setTextFormatter(new TextFormatter<>(filter));
 
         memField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal) {
+            if (newVal) { //Gained focus
                 if (memoryField.getText().equals("000")) {
                     memoryField.clear();
                 }
             }
 
-            if (!newVal) {
+            if (!newVal) { //lost focus
                 String text = memField.getText();
 
                 if (text.isEmpty()) {
