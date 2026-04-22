@@ -6,7 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import org.example.llc.UI.MemoryCell;
+import org.example.llc.UI.CCMemoryCell;
 import org.example.llc.UI.UI;
 
 import java.io.IOException;
@@ -23,9 +23,11 @@ public class HelloApplication extends Application
         UI ui = new UI();
         BorderPane root = new BorderPane();
         TextField test2  = new TextField("MMMM");
-        MemoryCell test = new MemoryCell(12);
+        TextField test3  = new TextField("MMMM");
+        CCMemoryCell test = new CCMemoryCell(12);
         root.setCenter(test);
         root.setRight(test2);
+        root.setLeft(test3);
 
 
 

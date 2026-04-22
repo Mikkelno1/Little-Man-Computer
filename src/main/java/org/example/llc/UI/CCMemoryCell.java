@@ -1,0 +1,85 @@
+package org.example.llc.UI;
+
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
+import javafx.scene.layout.VBox;
+
+import java.util.function.UnaryOperator;
+
+public class CCMemoryCell extends VBox {
+
+    private final int address;
+    private final Label addressLbl;
+    private final TextField memoryField;
+
+    public CCMemoryCell(int address) {
+        this.address = address;
+        this.addressLbl = new Label(String.format("%02d", address));
+        this.memoryField = initializeMemField();
+
+        getChildren().addAll(this.addressLbl, memoryField);
+        setSpacing(2);
+        setAlignment(Pos.CENTER);
+        setPadding(new Insets(10));
+    }
+
+    public int getAddress() {
+        return address;
+    }
+
+    public TextField getMemoryField()  //Objektet
+    {
+        return memoryField;
+    }
+
+    public int getValue()              //Teksten i objektet
+    {
+        return Integer.parseInt(memoryField.getText());
+    }
+
+    public void setText(String text) {
+
+        memoryField.setText(text);
+    }
+
+    private TextField initializeMemField()
+    {
+        TextField memField;
+        UnaryOperator<TextFormatter.Change> filter = change -> {
+            String newText = change.getControlNewText();
+
+            if (newText.matches("\\d{0,3}"))  //tjekker om det er et digit \\d og input er 3 digits lang {0,3}
+            {
+                return change; // ændre Text
+            }
+            else
+            {
+                return null; // ændre ikke
+            }
+        };
+
+        memField = new TextField("000");
+
+        memField.setTextFormatter(new TextFormatter<>(filter));
+
+        memField.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal) { // lost focus
+                String text = memField.getText();
+
+                if (text.isEmpty()) {
+                    memField.setText("000");
+                } else {
+                    memField.setText(String.format("%03d", Integer.parseInt(text)));
+                }
+            }
+        });
+
+        return memField;
+    }
+}
+
+
+
