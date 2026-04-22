@@ -1,4 +1,4 @@
-package org.example.interacticecounterapp.Application;
+package org.example.llc.Application;
 
 import javafx.application.Application;
 

@@ -1,6 +1,6 @@
-package org.example.interacticecounterapp.Application;
+package org.example.llc.Application;
 
-import org.example.interacticecounterapp.Domain.Counter;
+import org.example.llc.Domain.Counter;
 
 
 public class HelloController

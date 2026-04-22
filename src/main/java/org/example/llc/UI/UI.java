@@ -1,14 +1,14 @@
-package org.example.interacticecounterapp.UI;
+package org.example.llc.UI;
 
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
-import org.example.interacticecounterapp.Application.HelloController;
+import org.example.llc.Application.HelloController;
 
 
 public class UI
 {
-
     public Pane root = null;
+    /*
     private Label label = null;
     private CustomButton cbIncrement = null;
     private CustomButton cbDecrement = null;
@@ -37,14 +37,17 @@ public class UI
 
         root.getChildren().addAll(cbIncrement, cbDecrement, cbReset, label);
     }
-
+*/
     public Pane getView()
     {
         return root;
     }
-
+/*
     public void updateLabel()
     {
         label.setText(String.valueOf(CONTROLLER.showValue()));
     }
+
+ */
+
 }

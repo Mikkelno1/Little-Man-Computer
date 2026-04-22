@@ -1,4 +1,4 @@
-package org.example.interacticecounterapp.Domain;
+package org.example.llc.Domain;
 
 public class Counter
 {
