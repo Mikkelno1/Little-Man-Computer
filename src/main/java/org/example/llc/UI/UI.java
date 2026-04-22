@@ -49,6 +49,7 @@ public class UI
             vbRight = new VBox();
             gpAddress = new GridPane();
 
+            root.setPadding(new Insets(15));
             root.setBottom(hbBottom);
             root.setTop(hbTop);
             root.setLeft(vbLeft);
@@ -69,6 +70,7 @@ public class UI
                 }
             }
             gpAddress.setAlignment(Pos.CENTER);
+            gpAddress.setPadding(new Insets(15));
         }
 
         private void rightLayout ()
