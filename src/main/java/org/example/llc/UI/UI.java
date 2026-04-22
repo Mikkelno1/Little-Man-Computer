@@ -29,6 +29,7 @@ public class UI
     private Button btnStop = null;
     private Button btnReset = null;
     private ListView lvOutput = null;
+    private CCMemoryCell[] cells = new CCMemoryCell[100];
 
     public UI()
     {
@@ -59,14 +60,14 @@ public class UI
 
         private void daiouwd ()
         {
-            int k = 0;
-            for (int i = 0; i < 10; i++)
-            {
-                for (int j = 0; j < 10; j++)
-                {
-                    gpAddress.add(new CCMemoryCell(k++), j, i);
-                    gpAddress.setVgap(10);
-                    gpAddress.setHgap(10);
+            for (int row = 0; row < 10; row++) {
+                for (int col = 0; col < 10; col++) {
+                    int address = row * 10 + col;
+
+                    CCMemoryCell cell = new CCMemoryCell(address);
+                    cells[address] = cell;
+
+                    gpAddress.add(cell, col, row);
                 }
             }
             gpAddress.setAlignment(Pos.CENTER);
@@ -114,7 +115,6 @@ public class UI
             hbTop.getChildren().addAll(btnSave, btnLoad, filler);
         }
 
-
         private void bottomLayout ()
         {
             btnRun = new Button("Run");
@@ -132,13 +132,10 @@ public class UI
             hbBottom.setSpacing(100);
             hbBottom.getChildren().addAll(btnRun, btnStep, btnStop, btnReset, lbWarning);
         }
-
-
         public BorderPane getView ()
         {
             return root;
         }
-
 
     }
 

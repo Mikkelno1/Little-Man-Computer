@@ -34,9 +34,9 @@ public class CCMemoryCell extends VBox {
         return memoryField;
     }
 
-    public int getValue()              //Teksten i objektet
+    public String getValue()              //Teksten i objektet
     {
-        return Integer.parseInt(memoryField.getText());
+        return memoryField.getText(); //Integer.parseInt(memoryField.getText());
     }
 
     public void setText(String text) {
@@ -50,7 +50,7 @@ public class CCMemoryCell extends VBox {
         UnaryOperator<TextFormatter.Change> filter = change -> {
             String newText = change.getControlNewText();
 
-            if (newText.matches("\\d{0,3}"))  //tjekker om det er et digit \\d og input er 3 digits lang {0,3}
+            if (newText.matches("-?\\d{0,3}"))  //tjekker om det er et digit \\d og input er 3 digits lang {0,3}
             {
                 return change; // ændre Text
             }
@@ -66,6 +66,12 @@ public class CCMemoryCell extends VBox {
         memField.setTextFormatter(new TextFormatter<>(filter));
 
         memField.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) { // gained focus (clicked into field)
+                if (memoryField.getText().equals("000")) {
+                    memoryField.clear();
+                }
+            }
+
             if (!newVal) { // lost focus
                 String text = memField.getText();
 
