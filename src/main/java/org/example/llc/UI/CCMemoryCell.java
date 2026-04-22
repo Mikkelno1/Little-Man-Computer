@@ -21,9 +21,8 @@ public class CCMemoryCell extends VBox {
         this.memoryField = initializeMemField();
 
         getChildren().addAll(this.addressLbl, memoryField);
-        setSpacing(2);
         setAlignment(Pos.CENTER);
-        setPadding(new Insets(10));
+
     }
 
     public int getAddress() {
@@ -62,6 +61,7 @@ public class CCMemoryCell extends VBox {
         };
 
         memField = new TextField("000");
+        memField.setAlignment(Pos.CENTER);
 
         memField.setTextFormatter(new TextFormatter<>(filter));
 

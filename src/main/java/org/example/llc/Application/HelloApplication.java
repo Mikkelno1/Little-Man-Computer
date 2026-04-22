@@ -3,10 +3,9 @@ package org.example.llc.Application;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import org.example.llc.UI.CCMemoryCell;
 import org.example.llc.UI.UI;
 
 import java.io.IOException;
@@ -14,26 +13,19 @@ import java.io.IOException;
 public class HelloApplication extends Application
 {
     Parent root = null;
-    int height = 600;
-    int width = 600;
+    int width = 1280;
+    int height = 720;
 
     @Override
     public void start(Stage stage) throws IOException
     {
+
         UI ui = new UI();
-        BorderPane root = new BorderPane();
-        TextField test2  = new TextField("MMMM");
-        TextField test3  = new TextField("MMMM");
-        CCMemoryCell test = new CCMemoryCell(12);
-        root.setCenter(test);
-        root.setRight(test2);
-        root.setLeft(test3);
-
-
-
-        Scene scene = new Scene(root, height, width);
+        root = ui.getView();
+        Scene scene = new Scene(root, width, height);
         stage.setTitle("Hello!");
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
     }
 }
