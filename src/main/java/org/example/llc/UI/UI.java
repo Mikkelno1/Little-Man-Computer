@@ -1,5 +1,7 @@
 package org.example.llc.UI;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -33,18 +35,17 @@ public class UI
     private Button btnStep;
     private Button btnStop;
     private Button btnReset;
-    private ListView<String> lvOutput;
+    private ListView<Integer> lvOutput;
+    private ObservableList<Integer> outputList = FXCollections.observableArrayList();
     private CCVBoxInsert ccVbInput;
     private CCVBoxInsert ccVbProgram;
     private CCVBoxInsert ccVbInstReg;
     private CCVBoxInsert ccVbAddReg;
     private CCVBoxInsert ccVbAcc;
-    private String output;
 
     private final CCMemoryCell[] cells = new CCMemoryCell[100];
     private String[] tfLoadArray;
     private String[] tfSaveArray;
-    private final MachineSim MS = new MachineSim();
 
     public UI()
     {
@@ -55,7 +56,6 @@ public class UI
         bottomLayout();
         createCells();
         writeToOutput();
-        loadInput();
 
         btnSave.setOnAction(event -> {
             valueFetch();
@@ -64,7 +64,7 @@ public class UI
 
         btnLoad.setOnAction(event -> loadFile());
 
-        btnRun.setOnAction(event -> startProgram(true));
+        btnRun.setOnAction(event -> {simulateGame(true); loadInput(); writeToOutput();});
     }
 
 
@@ -100,7 +100,7 @@ public class UI
                     if (!newVal) { // lost focus = user finished editing
                         int addr = cell.getAddress();
                         int value = Integer.parseInt(cell.getValue());
-                        MS.setMemoryValue(addr, value);
+                        controller.passOpcodeToMemory(addr, value);
                     }
                 });
 
@@ -134,11 +134,11 @@ public class UI
 
         private void leftLayout ()
         {
-            ccVbInput = new CCVBoxInsert("Program counter", 40, 40);
-            ccVbProgram = new CCVBoxInsert("Program counter", 40, 40);
-            ccVbInstReg = new CCVBoxInsert("Instruction Register", 40, 40);
-            ccVbAddReg = new CCVBoxInsert("Address Register", 40, 40);
-            ccVbAcc = new CCVBoxInsert("Accumulator", 40, 40);
+            ccVbInput = new CCVBoxInsert("Input", 40, 40, true);
+            ccVbProgram = new CCVBoxInsert("Program counter", 40, 40, false);
+            ccVbInstReg = new CCVBoxInsert("Instruction Register", 40, 40, false);
+            ccVbAddReg = new CCVBoxInsert("Address Register", 40, 40, false);
+            ccVbAcc = new CCVBoxInsert("Accumulator", 40, 40,false );
 
             vbLeft.setAlignment(Pos.CENTER);
             vbLeft.setPadding(new Insets(5));
@@ -241,21 +241,30 @@ public class UI
 
     private void loadInput()
     {
-        controller.loadInput(ccVbInput.getText());
+        if (ccVbInput.getText().isBlank())
+        {
+            controller.loadInput("000");
+        } else
+        {
+            controller.loadInput(ccVbInput.getText());
+        }
     }
 
     private void writeToOutput()
     {
-        lvOutput.setItems(controller.writeToOutput(output));
+        int accumulator = controller.writeToOutput();
+        outputList.add(accumulator);
+
+        lvOutput.setItems(outputList);
     }
 
     public BorderPane getView() {
         return root;
     }
 
-    public boolean startProgram(boolean running)
+    public void simulateGame(boolean running)
     {
-        return controller.startProgram(running);
+        controller.simulateGame(running);
     }
 
 

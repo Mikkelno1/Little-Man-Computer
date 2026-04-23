@@ -1,7 +1,6 @@
 package org.example.llc.Application;
 import Persistence.FileReader;
-import javafx.collections.ObservableList;
-import org.example.llc.Service.CPU;
+import org.example.llc.Service.MachineSim;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,7 +9,9 @@ public class HelloController
 {
 
     FileReader fileReader = new FileReader();
-    CPU cpu = new CPU();
+    MachineSim mSim = new MachineSim();
+
+
 
     public String[] saveFile(String[] arr, File file)
     {
@@ -20,17 +21,27 @@ public class HelloController
     {
         return fileReader.loadFile(file);
     }
-    public String loadInput(String text)
+    public void loadInput(String text)
     {
-        return cpu.loadInput();
+        mSim.loadInput(text);
     }
-    public ObservableList<String> writeToOutput(String text)
+    public int writeToOutput()
     {
-        return cpu.writeToInput(text);
+        return mSim.writeToOutput();
     }
 
-    public boolean startProgram(boolean running)
+    public void simulateGame(boolean running)
     {
-        return cpu.startProgram();
+       mSim.simulateGame(running);
+    }
+
+    public void passOpcodeToMemory(int address, int value)
+    {
+        mSim.setMemoryValue(address, value);
+    }
+
+    public void requestInput()
+    {
+
     }
 }

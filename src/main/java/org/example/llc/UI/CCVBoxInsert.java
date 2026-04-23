@@ -11,11 +11,11 @@ public class CCVBoxInsert extends VBox
     private TextField tf;
     private Label lb;
 
-    public CCVBoxInsert(String text, int x, int y)
+    public CCVBoxInsert(String text, int x, int y, boolean editable)
     {
         tf = new TextField();
         lb = new Label(text);
-        tf.setEditable(false);
+        tf.setEditable(editable);
         getChildren().addAll(lb,tf);
         setSpacing(5);
         setAlignment(Pos.CENTER);

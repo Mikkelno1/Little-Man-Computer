@@ -2,91 +2,106 @@ package org.example.llc.Service;
 
 public class MachineSim
 {
-    int[] memCels = new int[100];
+    int[] memory = new int[100];
     int opcode;
-    private final CPU cpu = new CPU();
+    int address;
+    private final CPU CPU = new CPU();
 
-
-    public void setMemoryValue(int addr, int value)
+    public void simulateGame(boolean running)
     {
-        memCels[addr] = value;
-    }
-
-    public void startProgram()
-    {
-        if (cpu.startProgram())
+        CPU.setRunning(running);
+        while(CPU.getRunning())
         {
-            handleOpcode(opcode);
+            CPU.setInstReg(memory[CPU.getProgramCounter()] / 100);
+            CPU.setAddress(memory[CPU.getProgramCounter()] % 100);
+            handleOpcode(CPU.getInstReg(), CPU.getAddress());
+            break;
         }
     }
 
-    public void handleOpcode(int codeValue)
-    {
-        opcode = getOpCode(codeValue);
-        int address = getAddress(codeValue);
 
+    public void handleOpcode(int opcode, int address)
+    {
+
+        System.out.println(opcode + " " + address);
         switch(opcode)
         {
             case 0:
                 //Stop program or skip if there is a value
                 if (address == 0)
                 {
-                    cpu.setRunning(false);
+                    CPU.setRunning(false);
                 } else
                 {
-                    cpu.setInstReg(cpu.getInstReg() + 1);
+                    CPU.increaseCounter();
                 }
                 break;
             case 1:
                 //get number from address, add it to accumulator
-                cpu.setAccumulator(cpu.getAccumulator() + memCels[address]);
+                CPU.setAccumulator(CPU.getAccumulator() + memory[address]);
+                System.out.println(CPU.accumulator + " add");
+                CPU.increaseCounter();
                 break;
             case 2:
                 // get number from address, sub it from accumulator
-                cpu.setAccumulator(cpu.getAccumulator() - memCels[address]);
+                CPU.setAccumulator(CPU.getAccumulator() - memory[address]);
+                System.out.println(CPU.accumulator + " minus");
+                CPU.increaseCounter();
                 break;
             case 3:
                 // store value from accumlator to address
-                memCels[address] = cpu.getAccumulator();
+
+                /**
+                 * mega fix later not now yes
+                 */
+                memory[address] = CPU.getAccumulator();
+                System.out.println(CPU.accumulator + " save");
+                CPU.increaseCounter();
                 break;
-            case 4:
+            case 5:
                 // load value from given address
-                cpu.setAccumulator(memCels[address]);
+                CPU.setAccumulator(memory[address]);
+                System.out.println(CPU.accumulator + " load");
+                CPU.increaseCounter();
                 break;
             case 6:
                 // Jump to given address
-                cpu.setProgramCounter(address);
+                CPU.setProgramCounter(address);
+                System.out.println(CPU.accumulator + " jump");
                 break;
             case 7:
                 // Jump if accumulator is zero
-                if (cpu.getAccumulator() == 0)
+                if (CPU.getAccumulator() == 0)
                 {
-                    cpu.setProgramCounter(address);
+                    CPU.setProgramCounter(address);
+                    System.out.println(CPU.accumulator + " jump on zero");
+                } else
+                {
+                    CPU.increaseCounter();
                 }
                 break;
             case 8:
                 // Jump if accumulator is positive
-                if (cpu.getAccumulator() > 0)
+                if (CPU.getAccumulator() > 0)
                 {
-                    cpu.setProgramCounter(address);
+                    CPU.setProgramCounter(address);
+                    System.out.println(CPU.accumulator + " jump on positive");
+                } else
+                {
+                    CPU.increaseCounter();
                 }
                 break;
             case 9:
-                int temp;
-
-                for (int i = 0; i < memCels.length; i++)
+                if (address == 1)
                 {
-                    temp = memCels[i];
-
-                    if (Integer.toString(temp).charAt(2) == '1')
-                    {
-                        cpu.loadInput();
-                    } else if (Integer.toString(temp).charAt(2) == '2')
-                    {
-                        cpu.writeToInput(String.valueOf(address));
-                    }
+                    //request input
+                    CPU.increaseCounter();
                 }
-
+                if (address == 2)
+                {
+                    writeToOutput();
+                    CPU.increaseCounter();
+                }
                 break;
             default:
                 // code block
@@ -94,16 +109,27 @@ public class MachineSim
         }
     }
 
-    public int getOpCode(int codeValue)
+    public void setMemoryValue(int addr, int value)
     {
-        String codeAsText = Integer.toString(codeValue);
-        return Integer.parseInt(codeAsText.substring(0,1));
+        memory[addr] = value;
     }
 
-    public int getAddress(int codeValue)
+
+    public int writeToOutput()
     {
-        String codeAsText = Integer.toString(codeValue);
-        return Integer.parseInt(codeAsText.substring(1,3));
+        return CPU.getAccumulator();
+    }
+
+
+    public void loadInput(String value)
+    {
+        int newValue = Integer.parseInt(value);
+        CPU.setAccumulator(newValue);
+    }
+
+    public void requestInput()
+    {
+
     }
 
 }

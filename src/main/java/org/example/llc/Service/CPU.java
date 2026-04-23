@@ -4,13 +4,12 @@ import javafx.collections.ObservableList;
 
 public class CPU
 {
-    private Boolean running = false;
-    private int programCounter = 0;
-    private int instReg = 0;
-    private int addressReg = 0;
-    private String input = "";
-    private ObservableList<String>  output;
-    private int accumulator = 0;
+    public boolean running = false;
+    public int programCounter = 0;
+    public int instReg = 0;
+    public int addressReg = 0;
+    public int accumulator = 0;
+
 
     public int getAccumulator()
     {
@@ -22,12 +21,12 @@ public class CPU
         this.accumulator = accumulator;
     }
 
-    public Boolean getRunning()
+    public boolean getRunning()
     {
         return running;
     }
 
-    public void setRunning(Boolean running)
+    public void setRunning(boolean running)
     {
         this.running = running;
     }
@@ -62,19 +61,8 @@ public class CPU
         this.addressReg = address;
     }
 
-    public ObservableList<String> writeToInput(String input)
+    public void increaseCounter()
     {
-        return output;
+        programCounter++;
     }
-
-    public String loadInput()
-    {
-        return input;
-    }
-
-    public boolean startProgram()
-    {
-        return running;
-    }
-
 }
