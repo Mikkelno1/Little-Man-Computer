@@ -21,7 +21,7 @@ public class CPU
         this.accumulator = accumulator;
     }
 
-    public boolean getRunning()
+    public boolean isRunning()
     {
         return running;
     }

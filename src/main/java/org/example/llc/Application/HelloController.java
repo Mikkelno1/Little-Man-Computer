@@ -4,6 +4,7 @@ import org.example.llc.Service.MachineSim;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.List;
 
 public class HelloController
 {
@@ -17,31 +18,46 @@ public class HelloController
     {
         return fileReader.saveFile(arr, file);
     }
+
     public String[] loadFile(File file) throws FileNotFoundException
     {
         return fileReader.loadFile(file);
     }
+
     public void loadInput(String text)
     {
         mSim.loadInput(text);
     }
-    public int writeToOutput()
+    /*
+    public int sendAccuToOutput()
     {
-        return mSim.writeToOutput();
+        return mSim.sendAccuToOutput();
     }
-
+    */
     public void simulateGame(boolean running)
     {
-       mSim.simulateGame(running);
+       mSim.setRunning(running);
+       //mSim.simulateGame();
     }
+
+    public void step()
+    {
+        mSim.step();
+    }
+
 
     public void passOpcodeToMemory(int address, int value)
     {
         mSim.setMemoryValue(address, value);
     }
 
-    public void requestInput()
+    public boolean isWaiting()
     {
+        return mSim.isWaiting();
+    }
 
+    public List<Integer> getOutputValues()
+    {
+        return mSim.getOutputValues();
     }
 }

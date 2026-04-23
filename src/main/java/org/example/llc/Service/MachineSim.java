@@ -1,28 +1,39 @@
 package org.example.llc.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MachineSim
 {
-    int[] memory = new int[100];
-    int opcode;
-    int address;
+    private int[] memory = new int[100];
+    private boolean waiting = false;
     private final CPU CPU = new CPU();
+    private final List<Integer> outputValues = new ArrayList<>();
 
-    public void simulateGame(boolean running)
+    /*
+    public void simulateGame()
     {
-        CPU.setRunning(running);
         while(CPU.getRunning())
         {
             CPU.setInstReg(memory[CPU.getProgramCounter()] / 100);
             CPU.setAddress(memory[CPU.getProgramCounter()] % 100);
             handleOpcode(CPU.getInstReg(), CPU.getAddress());
-            break;
+            //break;
         }
     }
+    */
+    public void step()
+    {
+        if (!CPU.isRunning() || isWaiting() ) { return; }
+        CPU.setInstReg(memory[CPU.getProgramCounter()] / 100);
+        CPU.setAddress(memory[CPU.getProgramCounter()] % 100);
+        handleOpcode(CPU.getInstReg(), CPU.getAddress());
+    }
+
 
 
     public void handleOpcode(int opcode, int address)
     {
-
         System.out.println(opcode + " " + address);
         switch(opcode)
         {
@@ -31,6 +42,7 @@ public class MachineSim
                 if (address == 0)
                 {
                     CPU.setRunning(false);
+                    waiting = false;
                 } else
                 {
                     CPU.increaseCounter();
@@ -39,13 +51,13 @@ public class MachineSim
             case 1:
                 //get number from address, add it to accumulator
                 CPU.setAccumulator(CPU.getAccumulator() + memory[address]);
-                System.out.println(CPU.accumulator + " add");
+                System.out.println(CPU.getAccumulator() + " add");
                 CPU.increaseCounter();
                 break;
             case 2:
                 // get number from address, sub it from accumulator
                 CPU.setAccumulator(CPU.getAccumulator() - memory[address]);
-                System.out.println(CPU.accumulator + " minus");
+                System.out.println(CPU.getAccumulator() + " minus");
                 CPU.increaseCounter();
                 break;
             case 3:
@@ -55,26 +67,26 @@ public class MachineSim
                  * mega fix later not now yes
                  */
                 memory[address] = CPU.getAccumulator();
-                System.out.println(CPU.accumulator + " save");
+                System.out.println(CPU.getAccumulator() + " save");
                 CPU.increaseCounter();
                 break;
             case 5:
                 // load value from given address
                 CPU.setAccumulator(memory[address]);
-                System.out.println(CPU.accumulator + " load");
+                System.out.println(CPU.getAccumulator() + " load");
                 CPU.increaseCounter();
                 break;
             case 6:
                 // Jump to given address
                 CPU.setProgramCounter(address);
-                System.out.println(CPU.accumulator + " jump");
+                System.out.println(CPU.getAccumulator() + " jump");
                 break;
             case 7:
                 // Jump if accumulator is zero
                 if (CPU.getAccumulator() == 0)
                 {
                     CPU.setProgramCounter(address);
-                    System.out.println(CPU.accumulator + " jump on zero");
+                    System.out.println(CPU.getAccumulator() + " jump on zero");
                 } else
                 {
                     CPU.increaseCounter();
@@ -85,7 +97,7 @@ public class MachineSim
                 if (CPU.getAccumulator() > 0)
                 {
                     CPU.setProgramCounter(address);
-                    System.out.println(CPU.accumulator + " jump on positive");
+                    System.out.println(CPU.getAccumulator() + " jump on positive");
                 } else
                 {
                     CPU.increaseCounter();
@@ -95,11 +107,14 @@ public class MachineSim
                 if (address == 1)
                 {
                     //request input
+                    CPU.setRunning(false);
+                    waiting = true;
                     CPU.increaseCounter();
                 }
-                if (address == 2)
+                else if (address == 2)
                 {
-                    writeToOutput();
+                    //sendAccuToOutput();
+                    outputValues.add(CPU.getAccumulator());
                     CPU.increaseCounter();
                 }
                 break;
@@ -114,22 +129,33 @@ public class MachineSim
         memory[addr] = value;
     }
 
-
-    public int writeToOutput()
+    /*
+    public int sendAccuToOutput()
     {
         return CPU.getAccumulator();
     }
+    */
 
-
-    public void loadInput(String value)
+    public void loadInput(String code)
     {
-        int newValue = Integer.parseInt(value);
+        int newValue = Integer.parseInt(code);
         CPU.setAccumulator(newValue);
+        //CPU.setRunning(true);
+        waiting = false;
     }
 
-    public void requestInput()
+    public boolean isWaiting()
     {
-
+        return waiting;
     }
 
+    public void setRunning(boolean bool)
+    {
+        CPU.setRunning(bool);
+    }
+
+    public List<Integer> getOutputValues()
+    {
+        return outputValues;
+    }
 }

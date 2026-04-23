@@ -12,7 +12,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import org.example.llc.Application.HelloController;
-import org.example.llc.Service.MachineSim;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -35,6 +34,7 @@ public class UI
     private Button btnStep;
     private Button btnStop;
     private Button btnReset;
+    private Button btnEnter;
     private ListView<Integer> lvOutput;
     private ObservableList<Integer> outputList = FXCollections.observableArrayList();
     private CCVBoxInsert ccVbInput;
@@ -55,7 +55,7 @@ public class UI
         topLayout();
         bottomLayout();
         createCells();
-        writeToOutput();
+        //writeToOutput();
 
         btnSave.setOnAction(event -> {
             valueFetch();
@@ -64,17 +64,36 @@ public class UI
 
         btnLoad.setOnAction(event -> loadFile());
 
-        btnRun.setOnAction(event -> {simulateGame(true); loadInput(); writeToOutput();});
+        btnStep.setOnAction(event -> {
+            controller.simulateGame(true);
+            controller.step();
+            refreshUI();
+        });
+
+        btnRun.setOnAction(event -> {
+            controller.simulateGame(true);
+            /*loadInput();
+            writeToOutput()*/;});
+
+        btnEnter.setOnAction(event -> {
+            if (controller.isWaiting()) {
+                controller.loadInput(ccVbInput.getText());
+                controller.simulateGame(true);
+                controller.step();
+                refreshUI();}
+        });
+
+
     }
 
 
-        private void paneLayout ()
-        {
-            hbBottom = new HBox();
-            hbTop = new HBox();
-            vbLeft = new VBox();
-            vbRight = new VBox();
-            gpAddress = new GridPane();
+    private void paneLayout ()
+    {
+        hbBottom = new HBox();
+        hbTop = new HBox();
+        vbLeft = new VBox();
+        vbRight = new VBox();
+        gpAddress = new GridPane();
 
         root.setPadding(new Insets(15));
         root.setBottom(hbBottom);
@@ -123,8 +142,8 @@ public class UI
         private void rightLayout ()
         {
             lbOutput = new Label("Output");
-
             lvOutput = new ListView<>();
+            lvOutput.setItems(outputList);
 
             vbRight.setAlignment(Pos.CENTER);
             vbRight.setPadding(new Insets(10));
@@ -135,6 +154,7 @@ public class UI
         private void leftLayout ()
         {
             ccVbInput = new CCVBoxInsert("Input", 40, 40, true);
+            btnEnter = new Button("Enter Value");
             ccVbProgram = new CCVBoxInsert("Program counter", 40, 40, false);
             ccVbInstReg = new CCVBoxInsert("Instruction Register", 40, 40, false);
             ccVbAddReg = new CCVBoxInsert("Address Register", 40, 40, false);
@@ -143,7 +163,7 @@ public class UI
             vbLeft.setAlignment(Pos.CENTER);
             vbLeft.setPadding(new Insets(5));
             vbLeft.setSpacing(30);
-            vbLeft.getChildren().addAll(ccVbInput, ccVbProgram, ccVbInstReg, ccVbAddReg, ccVbAcc);
+            vbLeft.getChildren().addAll(ccVbInput, btnEnter , ccVbProgram, ccVbInstReg, ccVbAddReg, ccVbAcc);
         }
 
         private void topLayout ()
@@ -200,7 +220,6 @@ public class UI
     }
 
 
-
     private void loadFile() {
         try {
             FileChooser fileChooser = new FileChooser();
@@ -238,7 +257,7 @@ public class UI
             }
         }
     }
-
+    /*
     private void loadInput()
     {
         if (ccVbInput.getText().isBlank())
@@ -249,23 +268,30 @@ public class UI
             controller.loadInput(ccVbInput.getText());
         }
     }
-
+     */
+    /*
     private void writeToOutput()
     {
-        int accumulator = controller.writeToOutput();
+        int accumulator = controller.sendAccuToOutput();
         outputList.add(accumulator);
 
         lvOutput.setItems(outputList);
     }
+    */
 
     public BorderPane getView() {
         return root;
     }
 
-    public void simulateGame(boolean running)
+    public void refreshUI()
     {
-        controller.simulateGame(running);
+        if(controller.isWaiting()) lbWarning.setText("INPUT PLS");
+        refreshOutput();
     }
 
+    private void refreshOutput()
+    {
+        outputList.setAll(controller.getOutputValues());
+    }
 
 }
