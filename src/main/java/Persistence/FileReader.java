@@ -21,7 +21,8 @@ public class FileReader
             output = new PrintWriter(file);
             while (x < i)
             {
-                output.print(arr[x] + "\n"); x++;
+                output.print(arr[x] + "\n");
+                x++;
             }
         } catch (FileNotFoundException e)
         {

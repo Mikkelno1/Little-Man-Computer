@@ -1,11 +1,16 @@
 package org.example.llc.Service;
 
+import javafx.collections.ObservableList;
+
 public class CPU
 {
     private Boolean running = false;
     private int programCounter = 0;
     private int instReg = 0;
     private int addressReg = 0;
+    private String input = "";
+    private ObservableList<String>  output;
+    private int accumulator = 0;
 
     public int getAccumulator()
     {
@@ -16,8 +21,6 @@ public class CPU
     {
         this.accumulator = accumulator;
     }
-
-    private int accumulator = 0;
 
     public Boolean getRunning()
     {
@@ -58,4 +61,20 @@ public class CPU
     {
         this.addressReg = address;
     }
+
+    public ObservableList<String> writeToInput(String input)
+    {
+        return output;
+    }
+
+    public String loadInput()
+    {
+        return input;
+    }
+
+    public boolean startProgram()
+    {
+        return running;
+    }
+
 }

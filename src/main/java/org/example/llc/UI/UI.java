@@ -34,6 +34,12 @@ public class UI
     private Button btnStop;
     private Button btnReset;
     private ListView<String> lvOutput;
+    private CCVBoxInsert ccVbInput;
+    private CCVBoxInsert ccVbProgram;
+    private CCVBoxInsert ccVbInstReg;
+    private CCVBoxInsert ccVbAddReg;
+    private CCVBoxInsert ccVbAcc;
+    private String output;
 
     private final CCMemoryCell[] cells = new CCMemoryCell[100];
     private String[] tfLoadArray;
@@ -48,6 +54,8 @@ public class UI
         topLayout();
         bottomLayout();
         createCells();
+        writeToOutput();
+        loadInput();
 
         btnSave.setOnAction(event -> {
             valueFetch();
@@ -55,6 +63,8 @@ public class UI
         });
 
         btnLoad.setOnAction(event -> loadFile());
+
+        btnRun.setOnAction(event -> startProgram(true));
     }
 
 
@@ -124,11 +134,11 @@ public class UI
 
         private void leftLayout ()
         {
-            CCVBoxInsert ccVbInput = new CCVBoxInsert("Program counter", 40, 40);
-            CCVBoxInsert ccVbProgram = new CCVBoxInsert("Program counter", 40, 40);
-            CCVBoxInsert ccVbInstReg = new CCVBoxInsert("Instruction Register", 40, 40);
-            CCVBoxInsert ccVbAddReg = new CCVBoxInsert("Address Register", 40, 40);
-            CCVBoxInsert ccVbAcc = new CCVBoxInsert("Accumulator", 40, 40);
+            ccVbInput = new CCVBoxInsert("Program counter", 40, 40);
+            ccVbProgram = new CCVBoxInsert("Program counter", 40, 40);
+            ccVbInstReg = new CCVBoxInsert("Instruction Register", 40, 40);
+            ccVbAddReg = new CCVBoxInsert("Address Register", 40, 40);
+            ccVbAcc = new CCVBoxInsert("Accumulator", 40, 40);
 
             vbLeft.setAlignment(Pos.CENTER);
             vbLeft.setPadding(new Insets(5));
@@ -215,7 +225,8 @@ public class UI
         }
     }
 
-    private void updateOperators() {
+    private void updateOperators()
+    {
         for (int i = 0; i < cells.length; i++)
         {
             if (tfLoadArray != null && i < tfLoadArray.length && tfLoadArray[i] != null)
@@ -228,7 +239,24 @@ public class UI
         }
     }
 
+    private void loadInput()
+    {
+        controller.loadInput(ccVbInput.getText());
+    }
+
+    private void writeToOutput()
+    {
+        lvOutput.setItems(controller.writeToOutput(output));
+    }
+
     public BorderPane getView() {
         return root;
     }
+
+    public boolean startProgram(boolean running)
+    {
+        return controller.startProgram(running);
+    }
+
+
 }

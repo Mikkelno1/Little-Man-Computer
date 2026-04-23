@@ -23,5 +23,13 @@ public class CCVBoxInsert extends VBox
         tf.setMinSize(x, y);
     }
 
+    public String getText()
+    {
+        return tf.getText();
+    }
 
+    public void setText(String text)
+    {
+        tf.setText(text);
+    }
 }

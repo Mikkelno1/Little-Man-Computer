@@ -3,6 +3,7 @@ package org.example.llc.Service;
 public class MachineSim
 {
     int[] memCels = new int[100];
+    int opcode;
     private final CPU cpu = new CPU();
 
 
@@ -11,9 +12,17 @@ public class MachineSim
         memCels[addr] = value;
     }
 
+    public void startProgram()
+    {
+        if (cpu.startProgram())
+        {
+            handleOpcode(opcode);
+        }
+    }
+
     public void handleOpcode(int codeValue)
     {
-        int opcode = getOpCode(codeValue);
+        opcode = getOpCode(codeValue);
         int address = getAddress(codeValue);
 
         switch(opcode)
@@ -63,16 +72,21 @@ public class MachineSim
                 }
                 break;
             case 9:
-                // if address is 01, request input
-                if (address == 1)
-                {
+                int temp;
 
-                }
-                // if address is 02, give output accumulator number
-                if(address == 2)
+                for (int i = 0; i < memCels.length; i++)
                 {
+                    temp = memCels[i];
 
+                    if (Integer.toString(temp).charAt(2) == '1')
+                    {
+                        cpu.loadInput();
+                    } else if (Integer.toString(temp).charAt(2) == '2')
+                    {
+                        cpu.writeToInput(String.valueOf(address));
+                    }
                 }
+
                 break;
             default:
                 // code block

@@ -1,6 +1,7 @@
 module org.example.interacticecounterapp {
     requires javafx.controls;
     requires javafx.fxml;
+    requires javafx.base;
 
 
     exports org.example.llc.Application;
