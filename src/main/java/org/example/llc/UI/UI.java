@@ -5,16 +5,20 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.FileChooser;
+import org.example.llc.Application.HelloController;
 import org.example.llc.Service.MachineSim;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 
 
 public class UI
 {
-
+    private final HelloController controller = new HelloController();
     BorderPane root = new BorderPane();
     private VBox vbLeft;
     private VBox vbRight;
@@ -32,7 +36,6 @@ public class UI
     private ListView<String> lvOutput;
 
     private final CCMemoryCell[] cells = new CCMemoryCell[100];
-    private CCMemoryCell[] memCellArray;
     private String[] tfLoadArray;
     private String[] tfSaveArray;
     private final MachineSim MS = new MachineSim();
@@ -48,7 +51,7 @@ public class UI
 
         btnSave.setOnAction(event -> {
             valueFetch();
-            saveFile();
+            saveFile(tfSaveArray);
         });
 
         btnLoad.setOnAction(event -> loadFile());
@@ -98,11 +101,14 @@ public class UI
         gpAddress.setPadding(new Insets(15));
     }
 
-    private void valueFetch() {
-        for (int i = 0; i < memCellArray.length; i++) {
-            tfSaveArray[i] = String.valueOf(memCellArray[i].getValue());
+    private void valueFetch()
+    {
+        tfSaveArray = new String[100];
+        for (int i = 0; i < cells.length; i++)
+        {
+            tfSaveArray[i] = String.valueOf(cells[i].getValue());
         }
-        }
+    }
 
         private void rightLayout ()
         {
@@ -168,7 +174,8 @@ public class UI
         );
     }
 
-    private void saveFile() {
+    private void saveFile(String[] data)
+    {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("ASCII", "*.ASC")
@@ -176,10 +183,13 @@ public class UI
 
         File file = fileChooser.showSaveDialog(null);
 
-        if (file != null) {
-            CONTROLLER.saveFile(tfSaveArray, file);
+        if (file != null)
+        {
+            controller.saveFile(data, file);
         }
     }
+
+
 
     private void loadFile() {
         try {
@@ -191,22 +201,29 @@ public class UI
 
             File file = fileChooser.showOpenDialog(null);
 
-            if (file != null) {
-                tfLoadArray = CONTROLLER.loadFile(file);
+            if (file != null)
+            {
+                tfLoadArray = controller.loadFile(file);
                 updateOperators();
             }
 
-        } catch (RuntimeException | FileNotFoundException e) {
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        } catch (FileNotFoundException e)
+        {
             throw new RuntimeException(e);
         }
     }
 
     private void updateOperators() {
-        for (int i = 0; i < memCellArray.length; i++) {
-            if (tfLoadArray != null && i < tfLoadArray.length && tfLoadArray[i] != null) {
-                memCellArray[i].setValue(tfLoadArray[i]);
-            } else {
-                memCellArray[i].setValue("000");
+        for (int i = 0; i < cells.length; i++)
+        {
+            if (tfLoadArray != null && i < tfLoadArray.length && tfLoadArray[i] != null)
+            {
+                cells[i].setValue(tfLoadArray[i]);
+            } else
+            {
+                cells[i].setValue("000");
             }
         }
     }
