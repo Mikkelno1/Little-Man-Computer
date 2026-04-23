@@ -16,14 +16,14 @@ public class MachineSim
         int opcode = getOpCode(codeValue);
         int address = getAddress(codeValue);
 
-        switch(opcode) {
+        switch(opcode)
+        {
             case 0:
                 //Stop program or skip if there is a value
-                if(address == 0)
+                if (address == 0)
                 {
                     cpu.setRunning(false);
-                }
-                else
+                } else
                 {
                     cpu.setInstReg(cpu.getInstReg() + 1);
                 }
@@ -50,14 +50,29 @@ public class MachineSim
                 break;
             case 7:
                 // Jump if accumulator is zero
-
+                if (cpu.getAccumulator() == 0)
+                {
+                    cpu.setProgramCounter(address);
+                }
                 break;
             case 8:
                 // Jump if accumulator is positive
+                if (cpu.getAccumulator() > 0)
+                {
+                    cpu.setProgramCounter(address);
+                }
                 break;
             case 9:
                 // if address is 01, request input
+                if (address == 1)
+                {
+
+                }
                 // if address is 02, give output accumulator number
+                if(address == 2)
+                {
+
+                }
                 break;
             default:
                 // code block
