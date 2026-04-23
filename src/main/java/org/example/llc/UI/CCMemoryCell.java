@@ -100,6 +100,8 @@ public class CCMemoryCell extends VBox {
             memoryField.setText("000");
         }
     }
+
+
 }
 
 

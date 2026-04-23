@@ -32,9 +32,10 @@ public class UI
     private Button btnLoad;
     private Button btnRun;
     private Button btnStep;
-    private Button btnStop;
+    private Button btnResetProg;
     private Button btnReset;
     private Button btnEnter;
+    private AnchorPane ap;
     private ListView<Integer> lvOutput;
     private ObservableList<Integer> outputList = FXCollections.observableArrayList();
     private CCVBoxInsert ccVbInput;
@@ -42,6 +43,7 @@ public class UI
     private CCVBoxInsert ccVbInstReg;
     private CCVBoxInsert ccVbAddReg;
     private CCVBoxInsert ccVbAcc;
+    private int buttonClicked;
 
     private final CCMemoryCell[] cells = new CCMemoryCell[100];
     private String[] tfLoadArray;
@@ -65,26 +67,46 @@ public class UI
         btnLoad.setOnAction(event -> loadFile());
 
         btnStep.setOnAction(event -> {
-            controller.simulateGame(true);
+            buttonClicked = 2;
+            controller.setRunning(true);
             controller.step();
             refreshUI();
         });
 
         btnRun.setOnAction(event -> {
-            controller.simulateGame(true);
+            buttonClicked = 1;
+            controller.setRunning(true);
+            while(!controller.isWaiting() && controller.isRunning()){
+                System.out.println(controller.isWaiting());
+                btnStep.fire();
+            }
             /*loadInput();
             writeToOutput()*/;});
 
         btnEnter.setOnAction(event -> {
-            if (controller.isWaiting()) {
+
+            if (controller.isWaiting())
+            {
                 controller.loadInput(ccVbInput.getText());
-                controller.simulateGame(true);
-                controller.step();
-                refreshUI();}
+                controller.setRunning(true);
+                lbWarning.setText("");
+            }
+            if (buttonClicked == 1)
+            {
+                btnRun.fire();
+            } else if (buttonClicked == 2)
+            {
+                btnStep.fire();
+            }
+            refreshUI();
         });
 
+        btnResetProg.setOnAction(event -> {resetCPU(); refreshUI(); resetProgram();});
+
+        btnReset.setOnAction(event -> {resetProgCount(); refreshUI(); refreshMemory();});
 
     }
+
 
 
     private void paneLayout ()
@@ -170,7 +192,10 @@ public class UI
         {
             btnSave = new Button("Save");
             btnLoad = new Button("Load");
+
             Rectangle filler = new Rectangle();
+            ap = new AnchorPane();
+            lbWarning = new Label();
 
             filler.setFill(Color.TRANSPARENT);
             filler.setWidth(10);
@@ -178,7 +203,18 @@ public class UI
             hbTop.setAlignment(Pos.TOP_RIGHT);
             hbTop.setPadding(new Insets(38));
             hbTop.setSpacing(30);
-            hbTop.getChildren().addAll(btnSave, btnLoad, filler);
+            AnchorPane.setLeftAnchor(lbWarning, 100.0);
+            AnchorPane.setTopAnchor(lbWarning, 10.0);
+            lbWarning.setPrefSize(250,50);
+            lbWarning.setStyle("-fx-font-size: 50; -fx-text-fill: #FF0000");
+
+            AnchorPane.setRightAnchor(btnSave, 180.0);
+            AnchorPane.setTopAnchor(btnSave, 50.0);
+            AnchorPane.setRightAnchor(btnLoad, 50.0);
+            AnchorPane.setTopAnchor(btnLoad, 50.0);
+            ap.getChildren().addAll(lbWarning, btnSave, btnLoad, filler);
+            root.setTop(ap);
+
         }
 
     private void bottomLayout() {
@@ -188,19 +224,17 @@ public class UI
         btnStep = new Button("Step");
         btnStep.setPrefSize(45, 25);
 
-        btnStop = new Button("Stop");
-        btnStop.setPrefSize(45, 25);
+        btnResetProg = new Button("Clear");
+        btnResetProg.setPrefSize(45, 25);
 
         btnReset = new Button("Reset");
-        btnReset.setPrefSize(45, 25);
-
-        lbWarning = new Label();
+        btnReset.setPrefSize(45,25);
 
         hbBottom.setAlignment(Pos.BOTTOM_CENTER);
         hbBottom.setPadding(new Insets(20));
         hbBottom.setSpacing(100);
         hbBottom.getChildren().addAll(
-                btnRun, btnStep, btnStop, btnReset, lbWarning
+                btnRun, btnStep, btnReset, btnResetProg
         );
     }
 
@@ -283,15 +317,79 @@ public class UI
         return root;
     }
 
+
+
     public void refreshUI()
     {
-        if(controller.isWaiting()) lbWarning.setText("INPUT PLS");
+        if(controller.isWaiting())
+        {
+            btnRun.setDisable(true);
+            btnStep.setDisable(true);
+            lbWarning.setText("INPUT PLS");
+        } else {
+            btnRun.setDisable(false);
+            btnStep.setDisable(false);
+        }
         refreshOutput();
+        refreshAccumulator();
+        refreshProgCounter();
+        refreshAddress();
+        refreshInstReg();
     }
 
     private void refreshOutput()
     {
         outputList.setAll(controller.getOutputValues());
+    }
+
+    private void refreshAccumulator()
+    {
+        ccVbAcc.setText(Integer.toString(controller.getAccumulator()));
+    }
+
+    private void refreshProgCounter()
+    {
+        ccVbProgram.setText(Integer.toString(controller.getProgramCounter()));
+    }
+
+    private void refreshAddress()
+    {
+        ccVbAddReg.setText(Integer.toString(controller.getAddress()));
+    }
+
+    private void refreshInstReg()
+    {
+        ccVbInstReg.setText(Integer.toString(controller.getInstReg()));
+    }
+
+    private void resetCPU()
+    {
+        controller.resetProgram();
+    }
+
+    private void resetProgCount()
+    {
+        controller.resetProgCount();
+    }
+
+    private void refreshMemory()
+    {
+        int[] memory = controller.getMemory();
+        for (int i = 0; i < cells.length; i++)
+        {
+            CCMemoryCell cell = cells[i];
+            cell.setValue(String.valueOf(memory[i]));
+        }
+    }
+
+    private void resetProgram()
+    {
+        controller.resetProgram();
+        for (int i = 0; i < cells.length; i++)
+        {
+            CCMemoryCell cell = cells[i];
+            cell.setValue("000");
+        }
     }
 
 }

@@ -1,6 +1,7 @@
 package org.example.llc.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MachineSim
@@ -140,7 +141,6 @@ public class MachineSim
     {
         int newValue = Integer.parseInt(code);
         CPU.setAccumulator(newValue);
-        //CPU.setRunning(true);
         waiting = false;
     }
 
@@ -148,6 +148,7 @@ public class MachineSim
     {
         return waiting;
     }
+
 
     public void setRunning(boolean bool)
     {
@@ -158,4 +159,47 @@ public class MachineSim
     {
         return outputValues;
     }
+
+    public int getProgramCounter()
+    {
+        return CPU.getProgramCounter();
+    }
+
+    public int getAccumulator()
+    {
+        return CPU.getAccumulator();
+    }
+
+    public int getInstReg()
+    {
+        return CPU.getInstReg();
+    }
+
+    public int getAddress()
+    {
+        return CPU.getAddress();
+    }
+
+    public int[] getMemory()
+    {
+        return memory;
+    }
+
+    public boolean isRunning()
+    {
+        return CPU.isRunning();
+    }
+
+    public void resetProgram()
+    {
+        Arrays.fill(memory, 0);
+        CPU.resetCPU();
+    }
+
+    public void resetProgCount()
+    {
+        CPU.resetProgCount();
+    }
+
+
 }

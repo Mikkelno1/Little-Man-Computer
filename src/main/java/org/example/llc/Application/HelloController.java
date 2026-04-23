@@ -34,10 +34,9 @@ public class HelloController
         return mSim.sendAccuToOutput();
     }
     */
-    public void simulateGame(boolean running)
+    public void setRunning(boolean running)
     {
        mSim.setRunning(running);
-       //mSim.simulateGame();
     }
 
     public void step()
@@ -60,4 +59,45 @@ public class HelloController
     {
         return mSim.getOutputValues();
     }
+
+    public int getAccumulator()
+    {
+        return mSim.getAccumulator();
+    }
+
+    public int getProgramCounter()
+    {
+        return mSim.getProgramCounter();
+    }
+
+    public int getInstReg()
+    {
+        return mSim.getInstReg();
+    }
+
+    public int getAddress()
+    {
+        return mSim.getAddress();
+    }
+
+    public int[] getMemory()
+    {
+        return mSim.getMemory();
+    }
+
+    public boolean isRunning()
+    {
+        return mSim.isRunning();
+    }
+
+    public void resetProgram()
+    {
+        mSim.resetProgram();
+    }
+
+    public void resetProgCount()
+    {
+        mSim.resetProgCount();
+    }
+
 }

@@ -4,11 +4,26 @@ import javafx.collections.ObservableList;
 
 public class CPU
 {
-    public boolean running = false;
+    private boolean running = false;
     public int programCounter = 0;
     public int instReg = 0;
     public int addressReg = 0;
     public int accumulator = 0;
+
+    public void resetCPU()
+    {
+        running = false;
+        programCounter = 0;
+        instReg = 0;
+        addressReg = 0;
+        accumulator = 0;
+    }
+
+
+    public void resetProgCount()
+    {
+        programCounter = 0;
+    }
 
 
     public int getAccumulator()
