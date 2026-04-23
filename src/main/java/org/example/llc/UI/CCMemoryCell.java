@@ -46,22 +46,18 @@ public class CCMemoryCell extends VBox {
 
     private TextField initializeMemField()
     {
-        TextField memField;
+        TextField memField = new TextField("000");
+        memField.setAlignment(Pos.CENTER);
+
         UnaryOperator<TextFormatter.Change> filter = change -> {
             String newText = change.getControlNewText();
 
-            if (newText.matches("\\d{0,3}"))  //tjekker om det er et digit \\d og input er 3 digits lang {0,3}
-            {
-                return change; // ændre Text
-            }
-            else
-            {
-                return null; // ændre ikke
-            }
-        };
+            if (newText.isEmpty()) return change;
 
-        memField = new TextField("000");
-        memField.setAlignment(Pos.CENTER);
+            if (newText.matches("\\d{0,3}")) return change;
+
+            return null;
+        };
 
         memField.setTextFormatter(new TextFormatter<>(filter));
 
@@ -78,6 +74,24 @@ public class CCMemoryCell extends VBox {
         });
 
         return memField;
+    }
+
+    public void setValue(String text)
+    {
+        if (text == null || text.isEmpty())
+        {
+            memoryField.setText("000");
+            return;
+        }
+        try
+        {
+            int value = Integer.parseInt(text);
+            memoryField.setText(String.format("%03d", value));
+        }
+        catch (NumberFormatException e)
+        {
+            memoryField.setText("000");
+        }
     }
 }
 
