@@ -2,19 +2,28 @@ package org.example.llc.Service;
 
 public class MachineSim
 {
-    int[] memCels = new int[100];
-    private final CPU cpu = new CPU();
+    int[] memory = new int[100];
+    private final CPU cpu;
 
-
-    public void setMemoryValue(int addr, int value)
+    public MachineSim(CPU cpu)
     {
-        memCels[addr] = value;
+        this.cpu = cpu;
     }
 
-    public void handleOpcode(int codeValue)
+    public void simulateGame()
     {
-        int opcode = getOpCode(codeValue);
-        int address = getAddress(codeValue);
+        while(cpu.getRunning())
+        {
+            cpu.setInstReg(memory[cpu.getProgramCounter()] / 100);
+            cpu.setAddress(memory[cpu.getProgramCounter()] % 100);
+            handleOpcode(cpu.getInstReg(), cpu.getAddress());
+        }
+    }
+
+    public void handleOpcode(int opcode, int address) //public void handleOpcode(int codeValue)
+    {
+        //int opcode = codeValue / 100; //gets the first number
+        //int address = codeValue % 100; //gets the remainder
 
         switch(opcode)
         {
@@ -23,26 +32,31 @@ public class MachineSim
                 if (address == 0)
                 {
                     cpu.setRunning(false);
-                } else
+                }
+                else
                 {
-                    cpu.setInstReg(cpu.getInstReg() + 1);
+                    cpu.increaseCounter();
                 }
                 break;
             case 1:
                 //get number from address, add it to accumulator
-                cpu.setAccumulator(cpu.getAccumulator() + memCels[address]);
+                cpu.setAccumulator(cpu.getAccumulator() + memory[address]);
+                cpu.increaseCounter();
                 break;
             case 2:
                 // get number from address, sub it from accumulator
-                cpu.setAccumulator(cpu.getAccumulator() - memCels[address]);
+                cpu.setAccumulator(cpu.getAccumulator() - memory[address]);
+                cpu.increaseCounter();
                 break;
             case 3:
                 // store value from accumlator to address
-                memCels[address] = cpu.getAccumulator();
+                memory[address] = cpu.getAccumulator();
+                cpu.increaseCounter();
                 break;
-            case 4:
+            case 5:
                 // load value from given address
-                cpu.setAccumulator(memCels[address]);
+                cpu.setAccumulator(memory[address]);
+                cpu.increaseCounter();
                 break;
             case 6:
                 // Jump to given address
@@ -54,6 +68,10 @@ public class MachineSim
                 {
                     cpu.setProgramCounter(address);
                 }
+                else
+                {
+                    cpu.increaseCounter();
+                }
                 break;
             case 8:
                 // Jump if accumulator is positive
@@ -61,17 +79,23 @@ public class MachineSim
                 {
                     cpu.setProgramCounter(address);
                 }
+                else
+                {
+                    cpu.increaseCounter();
+                }
                 break;
             case 9:
                 // if address is 01, request input
                 if (address == 1)
                 {
-
+                    //add logic code
+                    cpu.increaseCounter();
                 }
                 // if address is 02, give output accumulator number
                 if(address == 2)
                 {
-
+                    //add logic code
+                    cpu.increaseCounter();
                 }
                 break;
             default:
@@ -80,16 +104,8 @@ public class MachineSim
         }
     }
 
-    public int getOpCode(int codeValue)
+    public void setMemoryValue(int addr, int value)
     {
-        String codeAsText = Integer.toString(codeValue);
-        return Integer.parseInt(codeAsText.substring(0,1));
+        memory[addr] = value;
     }
-
-    public int getAddress(int codeValue)
-    {
-        String codeAsText = Integer.toString(codeValue);
-        return Integer.parseInt(codeAsText.substring(1,3));
-    }
-
 }

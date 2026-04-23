@@ -2,10 +2,11 @@ package org.example.llc.Service;
 
 public class CPU
 {
-    private Boolean running = false;
+    private boolean running = false;
     private int programCounter = 0;
     private int instReg = 0;
     private int addressReg = 0;
+    private int accumulator = 0;
 
     public int getAccumulator()
     {
@@ -17,14 +18,12 @@ public class CPU
         this.accumulator = accumulator;
     }
 
-    private int accumulator = 0;
-
-    public Boolean getRunning()
+    public boolean getRunning()
     {
         return running;
     }
 
-    public void setRunning(Boolean running)
+    public void setRunning(boolean running)
     {
         this.running = running;
     }
@@ -37,6 +36,11 @@ public class CPU
     public void setProgramCounter(int programCounter)
     {
         this.programCounter = programCounter;
+    }
+
+    public void increaseCounter()
+    {
+        programCounter++;
     }
 
     public int getInstReg()
@@ -57,5 +61,14 @@ public class CPU
     public void setAddress(int address)
     {
         this.addressReg = address;
+    }
+
+    public void resetCPU()
+    {
+        running = false;
+        programCounter = 0;
+        instReg = 0;
+        addressReg = 0;
+        accumulator = 0;
     }
 }
