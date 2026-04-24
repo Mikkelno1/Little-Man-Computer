@@ -118,10 +118,13 @@ public class UI
                 mSim.loadInput(ccVbInput.getText());
                 mSim.setRunning(true);
                 lbWarning.setText("");
-                mSim.step();
-                refreshUI();
-            }
 
+                if (buttonClicked == 1) {
+                    btnRun.fire();   // continue run mode
+                } else {
+                    btnStep.fire();  // continue step mode
+                }
+            }
             refreshUI();
         });
 

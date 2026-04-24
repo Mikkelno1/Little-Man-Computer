@@ -3,13 +3,14 @@ package org.example.llc.Application;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.example.llc.UI.UI;
 
 import java.io.IOException;
 
+/**
+ * Defines stage and launches application
+ */
 public class HelloApplication extends Application
 {
     Parent root = null;

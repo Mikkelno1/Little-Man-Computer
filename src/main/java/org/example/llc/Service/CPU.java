@@ -1,7 +1,5 @@
 package org.example.llc.Service;
 
-import javafx.collections.ObservableList;
-
 public class CPU
 {
     private boolean running = false;
