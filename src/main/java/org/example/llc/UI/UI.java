@@ -8,10 +8,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
-import org.example.llc.Application.HelloController;
+import org.example.llc.Service.MachineSim;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -19,7 +17,7 @@ import java.io.FileNotFoundException;
 
 public class UI
 {
-    private final HelloController controller = new HelloController();
+    MachineSim mSim = new MachineSim();
     BorderPane root = new BorderPane();
     private VBox vbLeft;
     private VBox vbRight;
@@ -44,9 +42,7 @@ public class UI
     private CCVBoxInsert ccVbAddReg;
     private CCVBoxInsert ccVbAcc;
     private int buttonClicked;
-
     private final CCMemoryCell[] cells = new CCMemoryCell[100];
-    private String[] tfLoadArray;
     private String[] tfSaveArray;
 
     public UI()
@@ -57,47 +53,45 @@ public class UI
         topLayout();
         bottomLayout();
         createCells();
-        //writeToOutput();
 
         btnSave.setOnAction(event -> {
             valueFetch();
             saveFile(tfSaveArray);
         });
 
-        btnLoad.setOnAction(event -> loadFile());
+        btnLoad.setOnAction(event -> {
+            loadFile();
+            refreshUI();
+        });
 
         btnStep.setOnAction(event -> {
             buttonClicked = 2;
-            controller.setRunning(true);
-            controller.step();
+            lbWarning.setText("");
+            mSim.setRunning(true);
+            mSim.step();
             refreshUI();
         });
 
         btnRun.setOnAction(event -> {
             buttonClicked = 1;
-            controller.setRunning(true);
-            while(!controller.isWaiting() && controller.isRunning()){
-                System.out.println(controller.isWaiting());
+            mSim.setRunning(true);
+            lbWarning.setText("");
+            while(!mSim.isWaiting() && mSim.isRunning()){
+                System.out.println(mSim.isWaiting());
                 btnStep.fire();
             }
-            /*loadInput();
-            writeToOutput()*/;});
+            });
 
         btnEnter.setOnAction(event -> {
 
-            if (controller.isWaiting())
+            if (mSim.isWaiting())
             {
-                controller.loadInput(ccVbInput.getText());
-                controller.setRunning(true);
+                mSim.loadInput(ccVbInput.getText());
+                mSim.setRunning(true);
                 lbWarning.setText("");
-            }
-            if (buttonClicked == 1)
-            {
-                btnRun.fire();
-            } else if (buttonClicked == 2)
-            {
                 btnStep.fire();
             }
+
             refreshUI();
         });
 
@@ -125,8 +119,6 @@ public class UI
         root.setCenter(gpAddress);
     }
 
-
-
     private void createCells()
     {
         for (int row = 0; row < 10; row++)
@@ -141,7 +133,7 @@ public class UI
                     if (!newVal) { // lost focus = user finished editing
                         int addr = cell.getAddress();
                         int value = Integer.parseInt(cell.getValue());
-                        controller.passOpcodeToMemory(addr, value);
+                        mSim.setMemoryValue(addr, value);
                     }
                 });
 
@@ -152,70 +144,58 @@ public class UI
         gpAddress.setPadding(new Insets(15));
     }
 
-    private void valueFetch()
+    private void rightLayout ()
     {
-        tfSaveArray = new String[100];
-        for (int i = 0; i < cells.length; i++)
-        {
-            tfSaveArray[i] = String.valueOf(cells[i].getValue());
-        }
+        lbOutput = new Label("Output");
+        lvOutput = new ListView<>();
+        lvOutput.setItems(outputList);
+
+        vbRight.setAlignment(Pos.CENTER);
+        vbRight.setPadding(new Insets(10));
+        vbRight.getChildren().addAll(lbOutput, lvOutput);
+
     }
 
-        private void rightLayout ()
-        {
-            lbOutput = new Label("Output");
-            lvOutput = new ListView<>();
-            lvOutput.setItems(outputList);
+    private void leftLayout ()
+    {
+        ccVbInput = new CCVBoxInsert("Input", 40, 40, true);
+        btnEnter = new Button("Enter Value");
+        ccVbProgram = new CCVBoxInsert("Program counter", 40, 40, false);
+        ccVbInstReg = new CCVBoxInsert("Instruction Register", 40, 40, false);
+        ccVbAddReg = new CCVBoxInsert("Address Register", 40, 40, false);
+        ccVbAcc = new CCVBoxInsert("Accumulator", 40, 40,false );
 
-            vbRight.setAlignment(Pos.CENTER);
-            vbRight.setPadding(new Insets(10));
-            vbRight.getChildren().addAll(lbOutput, lvOutput);
+        vbLeft.setAlignment(Pos.CENTER);
+        vbLeft.setPadding(new Insets(5));
+        vbLeft.setSpacing(30);
+        vbLeft.getChildren().addAll(ccVbInput, btnEnter , ccVbProgram, ccVbInstReg, ccVbAddReg, ccVbAcc);
+    }
 
-        }
+    private void topLayout ()
+    {
+        btnSave = new Button("Save");
+        btnLoad = new Button("Load");
 
-        private void leftLayout ()
-        {
-            ccVbInput = new CCVBoxInsert("Input", 40, 40, true);
-            btnEnter = new Button("Enter Value");
-            ccVbProgram = new CCVBoxInsert("Program counter", 40, 40, false);
-            ccVbInstReg = new CCVBoxInsert("Instruction Register", 40, 40, false);
-            ccVbAddReg = new CCVBoxInsert("Address Register", 40, 40, false);
-            ccVbAcc = new CCVBoxInsert("Accumulator", 40, 40,false );
+        ap = new AnchorPane();
+        lbWarning = new Label();
 
-            vbLeft.setAlignment(Pos.CENTER);
-            vbLeft.setPadding(new Insets(5));
-            vbLeft.setSpacing(30);
-            vbLeft.getChildren().addAll(ccVbInput, btnEnter , ccVbProgram, ccVbInstReg, ccVbAddReg, ccVbAcc);
-        }
+        hbTop.setAlignment(Pos.TOP_RIGHT);
+        hbTop.setPadding(new Insets(38));
+        hbTop.setSpacing(30);
+        AnchorPane.setLeftAnchor(lbWarning, 100.0);
+        AnchorPane.setTopAnchor(lbWarning, 10.0);
+        lbWarning.setPrefSize(300,50);
+        lbWarning.setStyle("-fx-font-size: 50; -fx-text-fill: #FF0000");
 
-        private void topLayout ()
-        {
-            btnSave = new Button("Save");
-            btnLoad = new Button("Load");
+        AnchorPane.setRightAnchor(btnSave, 180.0);
+        AnchorPane.setTopAnchor(btnSave, 50.0);
+        AnchorPane.setRightAnchor(btnLoad, 50.0);
+        AnchorPane.setTopAnchor(btnLoad, 50.0);
 
-            Rectangle filler = new Rectangle();
-            ap = new AnchorPane();
-            lbWarning = new Label();
+        ap.getChildren().addAll(lbWarning, btnSave, btnLoad);
+        root.setTop(ap);
 
-            filler.setFill(Color.TRANSPARENT);
-            filler.setWidth(10);
-
-            hbTop.setAlignment(Pos.TOP_RIGHT);
-            hbTop.setPadding(new Insets(38));
-            hbTop.setSpacing(30);
-            AnchorPane.setLeftAnchor(lbWarning, 100.0);
-            AnchorPane.setTopAnchor(lbWarning, 10.0);
-            lbWarning.setPrefSize(250,50);
-            lbWarning.setStyle("-fx-font-size: 50; -fx-text-fill: #FF0000");
-
-            AnchorPane.setRightAnchor(btnSave, 180.0);
-            AnchorPane.setTopAnchor(btnSave, 50.0);
-            AnchorPane.setRightAnchor(btnLoad, 50.0);
-            AnchorPane.setTopAnchor(btnLoad, 50.0);
-            ap.getChildren().addAll(lbWarning, btnSave, btnLoad, filler);
-            root.setTop(ap);
-
-        }
+    }
 
     private void bottomLayout() {
         btnRun = new Button("Run");
@@ -249,10 +229,19 @@ public class UI
 
         if (file != null)
         {
-            controller.saveFile(data, file);
+            mSim.saveFile(file);
         }
     }
 
+
+    private void valueFetch()
+    {
+        tfSaveArray = new String[100];
+        for (int i = 0; i < cells.length; i++)
+        {
+            tfSaveArray[i] = String.valueOf(cells[i].getValue());
+        }
+    }
 
     private void loadFile() {
         try {
@@ -266,8 +255,8 @@ public class UI
 
             if (file != null)
             {
-                tfLoadArray = controller.loadFile(file);
-                updateOperators();
+                mSim.loadFile(file);
+                refreshUI();
             }
 
         } catch (RuntimeException e) {
@@ -275,20 +264,6 @@ public class UI
         } catch (FileNotFoundException e)
         {
             throw new RuntimeException(e);
-        }
-    }
-
-    private void updateOperators()
-    {
-        for (int i = 0; i < cells.length; i++)
-        {
-            if (tfLoadArray != null && i < tfLoadArray.length && tfLoadArray[i] != null)
-            {
-                cells[i].setValue(tfLoadArray[i]);
-            } else
-            {
-                cells[i].setValue("000");
-            }
         }
     }
 
@@ -300,7 +275,7 @@ public class UI
 
     public void refreshUI()
     {
-        if(controller.isWaiting())
+        if(mSim.isWaiting())
         {
             btnRun.setDisable(true);
             btnStep.setDisable(true);
@@ -309,51 +284,58 @@ public class UI
             btnRun.setDisable(false);
             btnStep.setDisable(false);
         }
+        if(mSim.isTrouble())
+        {
+            lbWarning.setText("Wrong input");
+            mSim.setTrouble(false);
+        }
+
         refreshOutput();
         refreshAccumulator();
         refreshProgCounter();
         refreshAddress();
         refreshInstReg();
+        refreshMemory();
     }
 
     private void refreshOutput()
     {
-        outputList.setAll(controller.getOutputValues());
+        outputList.setAll(mSim.getOutputValues());
     }
 
     private void refreshAccumulator()
     {
-        ccVbAcc.setText(Integer.toString(controller.getAccumulator()));
+        ccVbAcc.setText(Integer.toString(mSim.getAccumulator()));
     }
 
     private void refreshProgCounter()
     {
-        ccVbProgram.setText(Integer.toString(controller.getProgramCounter()));
+        ccVbProgram.setText(Integer.toString(mSim.getProgramCounter()));
     }
 
     private void refreshAddress()
     {
-        ccVbAddReg.setText(Integer.toString(controller.getAddress()));
+        ccVbAddReg.setText(Integer.toString(mSim.getAddress()));
     }
 
     private void refreshInstReg()
     {
-        ccVbInstReg.setText(Integer.toString(controller.getInstReg()));
+        ccVbInstReg.setText(Integer.toString(mSim.getInstReg()));
     }
 
     private void resetCPU()
     {
-        controller.resetProgram();
+        mSim.resetProgram();
     }
 
     private void resetProgCount()
     {
-        controller.resetProgCount();
+        mSim.resetProgCount();
     }
 
     private void refreshMemory()
     {
-        int[] memory = controller.getMemory();
+        int[] memory = mSim.getMemory();
         for (int i = 0; i < cells.length; i++)
         {
             CCMemoryCell cell = cells[i];
@@ -363,12 +345,11 @@ public class UI
 
     private void resetProgram()
     {
-        controller.resetProgram();
+        mSim.resetProgram();
         for (int i = 0; i < cells.length; i++)
         {
             CCMemoryCell cell = cells[i];
             cell.setValue("000");
         }
     }
-
 }

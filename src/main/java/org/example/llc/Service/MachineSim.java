@@ -1,5 +1,9 @@
 package org.example.llc.Service;
 
+import Persistence.FileReader;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,9 +12,27 @@ public class MachineSim
 {
     private int[] memory = new int[100];
     private boolean waiting = false;
+    private boolean trouble = false;
     private final CPU CPU = new CPU();
     private final List<Integer> outputValues = new ArrayList<>();
+    FileReader fileReader = new FileReader();
 
+
+    public void saveFile(File file)
+    {
+        fileReader.saveFile(memory, file);
+    }
+
+    public void loadFile(File file) throws FileNotFoundException
+    {
+        String[] opcodesAsText = fileReader.loadFile(file);
+
+        for (int i = 0; i < opcodesAsText.length ; i++)
+        {
+            int opcode = Integer.parseInt(opcodesAsText[i]);
+            memory[i] = opcode;
+        }
+    }
 
     public void step()
     {
@@ -19,7 +41,6 @@ public class MachineSim
         CPU.setAddress(memory[CPU.getProgramCounter()] % 100);
         handleOpcode(CPU.getInstReg(), CPU.getAddress());
     }
-
 
 
     public void handleOpcode(int opcode, int address)
@@ -52,10 +73,6 @@ public class MachineSim
                 break;
             case 3:
                 // store value from accumlator to address
-
-                /**
-                 * mega fix later not now yes
-                 */
                 memory[address] = CPU.getAccumulator();
                 System.out.println(CPU.getAccumulator() + " save");
                 CPU.increaseCounter();
@@ -109,9 +126,27 @@ public class MachineSim
                 }
                 break;
             default:
-                // code block
+                // error code
+                trouble = true;
+                setRunning(false);
+                errorMsg(CPU.getInstReg());
                 System.out.println("-_-");
         }
+    }
+
+    public boolean isTrouble()
+    {
+        return trouble;
+    }
+
+    public void setTrouble(boolean trouble)
+    {
+        this.trouble = trouble;
+    }
+
+    public String errorMsg(int i)
+    {
+        return "This is now a valid code " + i;
     }
 
     public void setMemoryValue(int addr, int value)
@@ -119,12 +154,6 @@ public class MachineSim
         memory[addr] = value;
     }
 
-    /*
-    public int sendAccuToOutput()
-    {
-        return CPU.getAccumulator();
-    }
-    */
 
     public void loadInput(String code)
     {

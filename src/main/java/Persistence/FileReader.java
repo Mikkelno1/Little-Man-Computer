@@ -1,56 +1,52 @@
 package Persistence;
 
-import javafx.stage.FileChooser;
-import org.example.llc.UI.CCMemoryCell;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
 public class FileReader
 {
-    String[] operatorArray;
+    String[] opcodesArray;
 
-    public String[] saveFile(String[] arr, File file)
+    public void saveFile(int[] arr, File file)
     {
-        int i = arr.length; int x = 0;
-        PrintWriter output;
-        try
+        try (PrintWriter output = new PrintWriter(file))
         {
-            output = new PrintWriter(file);
-            while (x < i)
+            for (int i : arr)
             {
-                output.print(arr[x] + "\n");
-                x++;
+                output.println(i);
             }
-        } catch (FileNotFoundException e)
+        }
+        catch (FileNotFoundException e)
         {
             throw new RuntimeException(e);
         }
-        output.close();
-        return arr;
     }
+
+
 
     public String[] loadFile(File file) throws FileNotFoundException
     {
-        int i = 0; try
-    {
-        Scanner scanner = new Scanner(file);
-        StringBuilder sb = new StringBuilder();
-        operatorArray = new String[100];
-        while (scanner.hasNextLine())
+        int i = 0;
+        try
         {
-            String operator = scanner.nextLine();
-            sb.append(operator);
-            operatorArray[i] = operator;
-            i++;
+            Scanner scanner = new Scanner(file);
+            StringBuilder sb = new StringBuilder();
+            opcodesArray = new String[100];
+            while (scanner.hasNextLine())
+            {
+                String operator = scanner.nextLine();
+                sb.append(operator);
+                opcodesArray[i] = operator;
+                i++;
+            }
+            scanner.close();
+            return opcodesArray;
         }
-        scanner.close();
-        return operatorArray;
-    } catch (RuntimeException e)
-    {
-        throw new RuntimeException(e);
-    }
+        catch (RuntimeException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 }
