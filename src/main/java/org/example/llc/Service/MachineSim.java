@@ -11,18 +11,7 @@ public class MachineSim
     private final CPU CPU = new CPU();
     private final List<Integer> outputValues = new ArrayList<>();
 
-    /*
-    public void simulateGame()
-    {
-        while(CPU.getRunning())
-        {
-            CPU.setInstReg(memory[CPU.getProgramCounter()] / 100);
-            CPU.setAddress(memory[CPU.getProgramCounter()] % 100);
-            handleOpcode(CPU.getInstReg(), CPU.getAddress());
-            //break;
-        }
-    }
-    */
+
     public void step()
     {
         if (!CPU.isRunning() || isWaiting() ) { return; }

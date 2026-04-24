@@ -28,12 +28,7 @@ public class HelloController
     {
         mSim.loadInput(text);
     }
-    /*
-    public int sendAccuToOutput()
-    {
-        return mSim.sendAccuToOutput();
-    }
-    */
+
     public void setRunning(boolean running)
     {
        mSim.setRunning(running);

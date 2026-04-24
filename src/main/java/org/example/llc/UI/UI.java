@@ -291,32 +291,11 @@ public class UI
             }
         }
     }
-    /*
-    private void loadInput()
-    {
-        if (ccVbInput.getText().isBlank())
-        {
-            controller.loadInput("000");
-        } else
-        {
-            controller.loadInput(ccVbInput.getText());
-        }
-    }
-     */
-    /*
-    private void writeToOutput()
-    {
-        int accumulator = controller.sendAccuToOutput();
-        outputList.add(accumulator);
 
-        lvOutput.setItems(outputList);
-    }
-    */
 
     public BorderPane getView() {
         return root;
     }
-
 
 
     public void refreshUI()
