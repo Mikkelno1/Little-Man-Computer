@@ -10,6 +10,9 @@ public class CPU
     public int addressReg = 0;
     public int accumulator = 0;
 
+    /**
+     * Resets the CPU state
+     */
     public void resetCPU()
     {
         running = false;
@@ -24,7 +27,6 @@ public class CPU
     {
         programCounter = 0;
     }
-
 
     public int getAccumulator()
     {

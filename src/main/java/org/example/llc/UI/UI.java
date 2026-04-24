@@ -194,7 +194,6 @@ public class UI
 
         ap.getChildren().addAll(lbWarning, btnSave, btnLoad);
         root.setTop(ap);
-
     }
 
     private void bottomLayout() {
@@ -233,7 +232,6 @@ public class UI
         }
     }
 
-
     private void valueFetch()
     {
         tfSaveArray = new String[100];
@@ -267,11 +265,9 @@ public class UI
         }
     }
 
-
     public BorderPane getView() {
         return root;
     }
-
 
     public void refreshUI()
     {
@@ -288,6 +284,7 @@ public class UI
         {
             lbWarning.setText("Wrong input");
             mSim.setTrouble(false);
+            mSim.resetProgCount();
         }
 
         refreshOutput();

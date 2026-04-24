@@ -129,7 +129,6 @@ public class MachineSim
                 // error code
                 trouble = true;
                 setRunning(false);
-                errorMsg(CPU.getInstReg());
                 System.out.println("-_-");
         }
     }
@@ -144,17 +143,15 @@ public class MachineSim
         this.trouble = trouble;
     }
 
-    public String errorMsg(int i)
-    {
-        return "This is now a valid code " + i;
-    }
-
     public void setMemoryValue(int addr, int value)
     {
         memory[addr] = value;
     }
 
-
+    /**
+     *
+     * @param code
+     */
     public void loadInput(String code)
     {
         int newValue = Integer.parseInt(code);
@@ -166,7 +163,6 @@ public class MachineSim
     {
         return waiting;
     }
-
 
     public void setRunning(boolean bool)
     {
@@ -208,6 +204,9 @@ public class MachineSim
         return CPU.isRunning();
     }
 
+    /**
+     * Fills memory with blanks(0) and resets the cpu
+     */
     public void resetProgram()
     {
         Arrays.fill(memory, 0);
