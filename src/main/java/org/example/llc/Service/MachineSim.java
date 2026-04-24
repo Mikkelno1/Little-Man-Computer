@@ -10,19 +10,33 @@ import java.util.List;
 
 public class MachineSim
 {
+    //Arrays
     private int[] memory = new int[100];
+    private final List<Integer> outputValues = new ArrayList<>();
+
+    //Booleans
     private boolean waiting = false;
     private boolean trouble = false;
+
+    //Objects
     private final CPU CPU = new CPU();
-    private final List<Integer> outputValues = new ArrayList<>();
     FileReader fileReader = new FileReader();
 
 
+    /**
+     * Saves the memory to given file
+     * @param file
+     */
     public void saveFile(File file)
     {
         fileReader.saveFile(memory, file);
     }
 
+    /**
+     * Loads given Ascii file into Machine memory
+     * @param file
+     * @throws FileNotFoundException
+     */
     public void loadFile(File file) throws FileNotFoundException
     {
         String[] opcodesAsText = fileReader.loadFile(file);
@@ -34,15 +48,23 @@ public class MachineSim
         }
     }
 
+    /**
+     * checks if the Machine in a running state
+     * Splits the code from memory and executes
+     */
     public void step()
     {
-        if (!CPU.isRunning() || isWaiting() ) { return; }
+        if (!CPU.isRunning() || isWaiting() || isTrouble()) { return; }
         CPU.setInstReg(memory[CPU.getProgramCounter()] / 100);
         CPU.setAddress(memory[CPU.getProgramCounter()] % 100);
         handleOpcode(CPU.getInstReg(), CPU.getAddress());
     }
 
-
+    /**
+     * Execute given opcode using given address
+     * @param opcode
+     * @param address
+     */
     public void handleOpcode(int opcode, int address)
     {
         System.out.println(opcode + " " + address);
@@ -143,14 +165,19 @@ public class MachineSim
         this.trouble = trouble;
     }
 
+    /**
+     * Copies the UI memory to Machine memory
+     * @param addr target address
+     * @param value the value set that address
+     */
     public void setMemoryValue(int addr, int value)
     {
         memory[addr] = value;
     }
 
     /**
-     *
-     * @param code
+     *Gets input from UI, and sets accumulator to the given value
+     * @param code value given
      */
     public void loadInput(String code)
     {
@@ -205,7 +232,7 @@ public class MachineSim
     }
 
     /**
-     * Fills memory with blanks(0) and resets the cpu
+     * Clears memory and resets the cpu
      */
     public void resetProgram()
     {

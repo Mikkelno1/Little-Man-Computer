@@ -1,10 +1,11 @@
 package org.example.llc.Service;
 
-import javafx.collections.ObservableList;
-
 public class CPU
 {
+    //Boolean for stopping the program
     private boolean running = false;
+
+    //Ints
     public int programCounter = 0;
     public int instReg = 0;
     public int addressReg = 0;

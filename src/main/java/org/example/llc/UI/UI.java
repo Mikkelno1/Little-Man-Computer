@@ -65,7 +65,7 @@ public class UI
         });
 
         btnStep.setOnAction(event -> {
-            buttonClicked = 2;
+            buttonClicked = 0;
             lbWarning.setText("");
             mSim.setRunning(true);
             mSim.step();
@@ -78,7 +78,8 @@ public class UI
             lbWarning.setText("");
             while(!mSim.isWaiting() && mSim.isRunning()){
                 System.out.println(mSim.isWaiting());
-                btnStep.fire();
+                mSim.step();
+                refreshUI();
             }
             });
 
@@ -89,9 +90,14 @@ public class UI
                 mSim.loadInput(ccVbInput.getText());
                 mSim.setRunning(true);
                 lbWarning.setText("");
-                btnStep.fire();
+                if (buttonClicked == 1) {
+                    btnRun.fire();
+                }
+                else
+                {
+                    btnStep.fire();
+                }
             }
-
             refreshUI();
         });
 
