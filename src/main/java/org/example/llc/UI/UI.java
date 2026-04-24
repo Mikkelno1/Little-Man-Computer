@@ -17,15 +17,26 @@ import java.io.FileNotFoundException;
 
 public class UI
 {
+    //Objects
     MachineSim mSim = new MachineSim();
     BorderPane root = new BorderPane();
+
+    //VBoxes
     private VBox vbLeft;
     private VBox vbRight;
+
+    //HBoxes
     private HBox hbTop;
     private HBox hbBottom;
+
+    //GridPanes
     private GridPane gpAddress;
+
+    //Labels
     private Label lbWarning;
     private Label lbOutput;
+
+    //Buttons
     private Button btnSave;
     private Button btnLoad;
     private Button btnRun;
@@ -33,18 +44,36 @@ public class UI
     private Button btnResetProg;
     private Button btnReset;
     private Button btnEnter;
+
+    //AnchorPane
     private AnchorPane ap;
+
+    //ListView
     private ListView<Integer> lvOutput;
+
+    //ObservableList
     private ObservableList<Integer> outputList = FXCollections.observableArrayList();
+
+    //Custom components
     private CCVBoxInsert ccVbInput;
     private CCVBoxInsert ccVbProgram;
     private CCVBoxInsert ccVbInstReg;
     private CCVBoxInsert ccVbAddReg;
     private CCVBoxInsert ccVbAcc;
-    private int buttonClicked;
-    private final CCMemoryCell[] cells = new CCMemoryCell[100];
-    private String[] tfSaveArray;
 
+    //Button id
+    private int buttonClicked;
+
+    //Custom component array
+    private final CCMemoryCell[] cells = new CCMemoryCell[100];
+
+    //Array
+    private String[] tfSaveArray; //Array with values from custom components
+
+
+    /**
+     * Main UI functionality
+     */
     public UI()
     {
         paneLayout();
@@ -89,7 +118,8 @@ public class UI
                 mSim.loadInput(ccVbInput.getText());
                 mSim.setRunning(true);
                 lbWarning.setText("");
-                btnStep.fire();
+                mSim.step();
+                refreshUI();
             }
 
             refreshUI();
@@ -101,8 +131,9 @@ public class UI
 
     }
 
-
-
+    /**
+     * Main layout
+     */
     private void paneLayout ()
     {
         hbBottom = new HBox();
@@ -119,6 +150,9 @@ public class UI
         root.setCenter(gpAddress);
     }
 
+    /**
+     * Creates custom components
+     */
     private void createCells()
     {
         for (int row = 0; row < 10; row++)
@@ -144,6 +178,9 @@ public class UI
         gpAddress.setPadding(new Insets(15));
     }
 
+    /**
+     * Right side of window layout
+     */
     private void rightLayout ()
     {
         lbOutput = new Label("Output");
@@ -156,6 +193,9 @@ public class UI
 
     }
 
+    /**
+     * Left side of window layout
+     */
     private void leftLayout ()
     {
         ccVbInput = new CCVBoxInsert("Input", 40, 40, true);
@@ -171,6 +211,9 @@ public class UI
         vbLeft.getChildren().addAll(ccVbInput, btnEnter , ccVbProgram, ccVbInstReg, ccVbAddReg, ccVbAcc);
     }
 
+    /**
+     * Top side of window layout
+     */
     private void topLayout ()
     {
         btnSave = new Button("Save");
@@ -196,6 +239,9 @@ public class UI
         root.setTop(ap);
     }
 
+    /**
+     * Bottom side of window layout
+     */
     private void bottomLayout() {
         btnRun = new Button("Run");
         btnRun.setPrefSize(45, 25);
@@ -217,6 +263,10 @@ public class UI
         );
     }
 
+    /**
+     * Creates filechooser object to handle saving file
+     * using predefined file extensions
+     */
     private void saveFile(String[] data)
     {
         FileChooser fileChooser = new FileChooser();
@@ -232,6 +282,10 @@ public class UI
         }
     }
 
+    /**
+     * Fetches values from custom components and saves to array
+     * using predefined file extensions
+     */
     private void valueFetch()
     {
         tfSaveArray = new String[100];
@@ -241,6 +295,9 @@ public class UI
         }
     }
 
+    /**
+     * Creates filechooser object to handle loading file
+     */
     private void loadFile() {
         try {
             FileChooser fileChooser = new FileChooser();
@@ -265,10 +322,9 @@ public class UI
         }
     }
 
-    public BorderPane getView() {
-        return root;
-    }
-
+    /**
+     * Refreshes UI to show new state of mailboxes (custom components)
+     */
     public void refreshUI()
     {
         if(mSim.isWaiting())
@@ -295,41 +351,66 @@ public class UI
         refreshMemory();
     }
 
+    /**
+     * Refreshes output by passing value from accumulator to the listView when condition is met
+     */
     private void refreshOutput()
     {
         outputList.setAll(mSim.getOutputValues());
     }
 
+    /**
+     * Refreshes accumulator by fetching current accumulator value
+     */
     private void refreshAccumulator()
     {
         ccVbAcc.setText(Integer.toString(mSim.getAccumulator()));
     }
 
+    /**
+     * Refreshes program counter by fetching current program counter value
+     */
     private void refreshProgCounter()
     {
         ccVbProgram.setText(Integer.toString(mSim.getProgramCounter()));
     }
 
+    /**
+     * Refreshes address by fetching current addresses
+     */
     private void refreshAddress()
     {
         ccVbAddReg.setText(Integer.toString(mSim.getAddress()));
     }
 
+    /**
+     * Refreshes instruction register by fetching current instruction register
+     */
     private void refreshInstReg()
     {
         ccVbInstReg.setText(Integer.toString(mSim.getInstReg()));
     }
 
+    /**
+     * Resets CPU state
+     */
     private void resetCPU()
     {
         mSim.resetProgram();
     }
 
+    /**
+     * Resets program counter
+     */
     private void resetProgCount()
     {
         mSim.resetProgCount();
     }
 
+    /**
+     * Shows real time values in the mailboxes (custom component) by passing data from the
+     * memory array
+     */
     private void refreshMemory()
     {
         int[] memory = mSim.getMemory();
@@ -340,6 +421,9 @@ public class UI
         }
     }
 
+    /**
+     * Resets mailboxes (custom components) to a default value
+     */
     private void resetProgram()
     {
         mSim.resetProgram();
@@ -348,5 +432,12 @@ public class UI
             CCMemoryCell cell = cells[i];
             cell.setValue("000");
         }
+    }
+
+    /**
+     * Passes root to allow UI to be called from main program launch
+     */
+    public BorderPane getView() {
+        return root;
     }
 }

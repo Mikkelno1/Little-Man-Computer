@@ -5,10 +5,19 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
+/**
+ * Creates Print Writers to enable save and load functionality
+ */
+
 public class FileReader
 {
     String[] opcodesArray;
 
+    /**
+     * Handles save logic
+     * @param arr is array to be saved
+     * @param file is file to be saved
+     */
     public void saveFile(int[] arr, File file)
     {
         try (PrintWriter output = new PrintWriter(file))
@@ -24,8 +33,12 @@ public class FileReader
         }
     }
 
-
-
+    /**
+     * Handles load functionality
+     * @param file file to be read by scanner
+     * @return returns array to be passed on to UI
+     * @throws FileNotFoundException throws exception
+     */
     public String[] loadFile(File file) throws FileNotFoundException
     {
         int i = 0;
