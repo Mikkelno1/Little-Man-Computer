@@ -1,6 +1,5 @@
 package org.example.llc.UI;
 
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -9,11 +8,16 @@ import javafx.scene.layout.VBox;
 
 import java.util.function.UnaryOperator;
 
-public class CCMemoryCell extends VBox {
+/**
+ * Custom component for the UI class
+ */
+public class CCMemoryCell extends VBox
+{
 
     private final int address;
     private final Label addressLbl;
     private final TextField memoryField;
+
 
     public CCMemoryCell(int address) {
         super();
@@ -23,28 +27,26 @@ public class CCMemoryCell extends VBox {
 
         getChildren().addAll(this.addressLbl, memoryField);
         setAlignment(Pos.CENTER);
-
     }
 
     public int getAddress() {
         return address;
     }
 
-    public TextField getMemoryField()  //Objektet
+    public TextField getMemoryField()
     {
         return memoryField;
     }
 
-    public String getValue()              //Teksten i objektet
+    public String getValue()
     {
-        return memoryField.getText(); //Integer.parseInt(memoryField.getText());
+        return memoryField.getText();
     }
 
-    public void setText(String text) {
 
-        memoryField.setText(text);
-    }
-
+    /**
+     * Enforces regex on textfield
+     */
     private TextField initializeMemField()
     {
         TextField memField = new TextField("000");
@@ -83,6 +85,9 @@ public class CCMemoryCell extends VBox {
         return memField;
     }
 
+    /**
+     * Enables textfields to be modified while enforcing regex
+     */
     public void setValue(String text)
     {
         if (text == null || text.isEmpty())

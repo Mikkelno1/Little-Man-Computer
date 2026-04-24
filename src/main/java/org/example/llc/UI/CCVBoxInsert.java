@@ -2,10 +2,12 @@ package org.example.llc.UI;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.control.Labeled;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
+/**
+ * Creates custom components to be used in UI
+ */
 public class CCVBoxInsert extends VBox
 {
 
@@ -32,19 +34,5 @@ public class CCVBoxInsert extends VBox
     public void setText(String text)
     {
         tf.setText(text);
-    }
-
-    public void setEditable(boolean bool)
-    {
-        tf.setEditable(bool);
-    }
-    public boolean getEditableState()
-    {
-        return tf.isEditable();
-    }
-
-    public TextField getTextField()
-    {
-        return tf;
     }
 }
